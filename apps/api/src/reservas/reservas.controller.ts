@@ -6,7 +6,6 @@ import { UpdateReservaDto } from './dto/update-reserva.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { CurrentUser } from '../auth/user.decorator';
 
-
 type JwtUser = { sub: string; email: string };
 
 @ApiTags('reservas')
