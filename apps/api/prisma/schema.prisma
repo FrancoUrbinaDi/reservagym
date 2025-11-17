@@ -16,31 +16,45 @@ enum Role {
   USER
   ADMIN
 }
+
 model User {
   id              String @id @default(cuid())
   email           String @unique
   name            String?
-  passwordHash   String
-  role          Role      @default(USER)
+  passwordHash    String
+  role            Role @default(USER)
 
-  reservas Reserva[] // Un usuario puede tener muchas reservas
+  reservas        Reserva[]
+  tokens          RefreshToken[]
 
-  createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  createdAt       DateTime @default(now())
+  updateAt        DateTime @updatedAt
   
 }
 
-// Reservas realizadas por los usuarios
+model RefreshToken {
+  id               String   @id @default(cuid())
+  tokenHash        String
+  expiresAt        DateTime
+  revoked          Boolean  @default(false)
+  replaceByTokenId String?
+
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
 model Reserva {
-  id         String   @id @default(uuid())
-  nombreUsuario String
-  descripcion String?
-  estado     EstadoReserva
-  userId     String
-  dueDate    DateTime?
-  user       User     @relation(fields: [userId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id              String   @id @default(uuid())
+  nombreUsuario   String
+  descripcion     String?
+  estado          EstadoReserva
+  dueDate         DateTime?
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@index([userId])
 

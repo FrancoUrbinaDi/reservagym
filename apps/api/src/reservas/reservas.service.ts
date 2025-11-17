@@ -7,43 +7,54 @@ import { UpdateReservaDto } from './dto/update-reserva.dto';
 export class ReservasService {
   constructor(private prisma: PrismaService) { }
 
-  async create(userId: string, dto: CreateReservaDto) {
-    const { dueDate, nombreUsuario, description, estado } = dto;
+  create(userId: string, dto: CreateReservaDto) {
+    const { dueDate, estado, ...rest } = dto;
     return this.prisma.reserva.create({
       data: {
-        nombreUsuario, // required by Prisma
+        ...rest,
         userId,
         dueDate: dueDate ? new Date(dueDate) : null,
-        descripcion: description,
-        estado: estado ?? 'ACTIVA', // default to 'ACTIVA' if undefined
+        estado: estado ?? 'ACTIVA', // default to ACTIVA if undefined
       },
     });
   }
-  findAll(userId: string, skip = 0, take = 20) {
- return this.prisma.reserva.findMany({
- where: { userId },
- orderBy: { createdAt: 'desc' },
- skip, take,
- });
-}
-  async findOne(userId: string, id: string) {
- const task = await this.prisma.reserva.findFirst({ where: { id, userId } });
- if (!task) throw new NotFoundException('Task not found');
- return task;
-}
-async update(userId: string, id: string, dto: UpdateReservaDto) {
- await this.findOne(userId, id);
- const { dueDate, ...rest } = dto;
- return this.prisma.reserva.update({
- where: { id },
- data: { ...rest, ...(dueDate !== undefined ? { dueDate: dueDate ? new Date
-(dueDate) : null } : {}) },
- });
-}
 
-async remove(userId: string, id: string) {
- await this.findOne(userId, id);
- await this.prisma.reserva.delete({ where: { id } });
- return { ok: true };
-}
+  findAll(userId: string, skip = 0, take = 20) {
+    return this.prisma.reserva.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      skip, take,
+    });
+  }
+  async findOne(userId: string, id: string) {
+    const reserva = await this.prisma.reserva.findFirst({ where: { id, userId } });
+    if (!reserva) throw new NotFoundException('Reserva not found');
+    return reserva;
+  }
+  async update(userId: string, id: string, dto: UpdateReservaDto) {
+    await this.findOne(userId, id);
+    const { dueDate, ...rest } = dto;
+    return this.prisma.reserva.update({
+      where: { id },
+      data: {
+        ...rest, ...(dueDate !== undefined ? {
+          dueDate: dueDate ? new Date
+            (dueDate) : null
+        } : {})
+      },
+    });
+  }
+
+  async remove(userId: string, id: string) {
+    await this.findOne(userId, id);
+    await this.prisma.reserva.delete({ where: { id } });
+    return { ok: true };
+  }
+
+  findAllAdmin(skip = 0, take = 20) {
+    return this.prisma.reserva.findMany({
+      orderBy: { createdAt: 'desc' },
+      skip, take,
+    });
+  }
 }
