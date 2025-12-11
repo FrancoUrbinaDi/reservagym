@@ -5,6 +5,7 @@ import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './jwt.guard';
 import { CurrentUser } from './user.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { TokenDto } from './dto/token.dto';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -18,13 +19,15 @@ export class AuthController {
       return this.auth.login(dto.email, dto.password);
    }
    @Post('refresh')
-   refresh(@Body('refresh_token') token: string) {
-      return this.auth.refresh(token);
+   refresh(@Body() dto: TokenDto) {
+      return this.auth.refresh(dto.refresh_token);
    }
+
    @Post('logout')
-   logout(@Body('refresh_token') token: string) {
-      return this.auth.logout(token);
+   logout(@Body() dto: TokenDto) {
+      return this.auth.logout(dto.refresh_token);
    }
+
    @ApiBearerAuth()
    @UseGuards(JwtAuthGuard)
    @Get('me')

@@ -1,42 +1,710 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* apps/web/src/App.css */
+
+/* ========== LAYOUT BASE ========== */
+
+/* Fondo global */
+.app-shell {
+  min-height: 100vh;
+  width: 100%;                     /* ocupa todo el ancho del viewport */
+  padding: 1.5rem;
+  background: radial-gradient(circle at top left, #1f2937 0, #020617 50%, #000 100%);
+  color: #e5e7eb;
+  box-sizing: border-box;
+}
+
+/* Variante: Auth centrado */
+.app-shell--center,
+.app-shell--dashboard {
+  display: flex;
+}
+
+/* Login: tarjeta centrada en la pantalla */
+.app-shell--center {
+  justify-content: center;
+  align-items: center;
+}
+
+/* TaskBoard: modo dashboard full screen */
+.app-shell--dashboard {
+  justify-content: center;         /* centra el contenido horizontalmente */
+  align-items: stretch;            /* ocupa toda la altura disponible */
+}
+
+/* Contenedor interno del dashboard */
+.dashboard-layout {
+  width: 100%;
+  max-width: 1200px;               /* se ve bien en cualquier laptop */
+  margin: 0 auto;                  /* siempre centrado */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Grid principal: panel de creación + lista de tareas */
+.dashboard-main {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+/* Responsive: en pantallas estrechas pasa a 1 sola columna */
+@media (max-width: 900px) {
+  .app-shell {
+    padding: 1rem;
+  }
+
+  .dashboard-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== CARDS ========== */
+
+/* Tarjetas reutilizables (Auth, encabezado, paneles) */
+.card {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.95);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+/* Tarjeta de Auth más angosta */
+.auth-card {
+  max-width: 420px;
+}
+
+/* ========== HEADER ========== */
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.app-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.app-subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.user-info {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin-top: 0.5rem;
+}
+
+/* Títulos de secciones internas ("Nueva tarea", "Tus tareas") */
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+/* Icono en el título de sección */
+.title-icon {
+  margin-right: 0.5rem;
+  font-size: 1.5rem;
+}
+
+/* Badge de rol */
+.badge-role {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  margin-left: 0.4rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(55, 65, 81, 0.8);
+  color: #e5e7eb;
+}
+
+.badge-role.admin {
+  background: rgba(16, 185, 129, 0.14);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.5);
+}
+
+/* Estilos para badges de estado - MEJORADOS PARA FONDO OSCURO */
+.badge-estado {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-activa {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.badge-cancelada {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.badge-completada {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+/* ========== BOTONES ========== */
+
+.btn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  transition:
+    background 0.15s ease,
+    transform 0.05s ease,
+    box-shadow 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(to right, #6366f1, #8b5cf6);
+  color: white;
+  box-shadow: 0 12px 30px rgba(79, 70, 229, 0.45);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 40px rgba(79, 70, 229, 0.6);
+}
+
+.btn-secondary {
+  background: rgba(31, 41, 55, 0.9);
+  color: #e5e7eb;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(55, 65, 81, 0.95);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #9ca3af;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: rgba(31, 41, 55, 0.65);
+}
+
+.btn-danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: #fecaca;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.22);
+}
+
+/* ========== FORMULARIOS ========== */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Input tipo pill */
+.input {
+  border-radius: 999px;
+  border: 1px solid rgba(75, 85, 99, 0.8);
+  background: rgba(15, 23, 42, 0.9);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.9rem;
+  color: #e5e7eb;
+  outline: none;
+}
+
+.input::placeholder {
+  color: #6b7280;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ✅ Estilos para campo de solo lectura */
+.input-readonly,
+.input:disabled {
+  background-color: rgba(148, 163, 184, 0.1);
+  cursor: not-allowed;
+  color: #94a3b8;
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+.input-readonly:focus,
+.input:disabled:focus {
+  border-color: rgba(148, 163, 184, 0.3);
+  box-shadow: none;
+}
+
+/* Textarea con estética consistente */
+.textarea {
+  border-radius: 12px;
+  border: 1px solid rgba(75, 85, 99, 0.8);
+  background: rgba(15, 23, 42, 0.9);
+  padding: 0.55rem 0.9rem;
+  font-size: 0.9rem;
+  color: #e5e7eb;
+  outline: none;
+  resize: vertical;
+  min-height: 56px;
+}
+
+.textarea::placeholder {
+  color: #6b7280;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Fila para agrupar prioridad + fecha (crear y editar) */
+.task-edit-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* ========== LISTA DE TAREAS ========== */
+
+.tasks-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgba(55, 65, 81, 0.9);
+}
+
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+}
+
+.task-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+/* Descripción de la tarea (modo lectura) */
+.task-description {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  color: #d1d5db;
+}
+
+.task-meta {
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+/* Formulario de edición inline dentro del item */
+.task-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Acciones de cada tarea */
+.task-actions {
+  display: flex;
+  gap: 0.4rem;
+  margin-left: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* ========== ERRORES AUTH ========== */
+
+.error-text {
+  color: #fecaca;
+  font-size: 0.82rem;
+}
+
+/* ✅  */
+.form-card {
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+/* Estilos para lista mejorada */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.badge-count {
+  background: #3b82f6;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  min-width: 2rem;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  margin: 0 auto 1rem;
+}
+
+.empty-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.empty-hint {
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.reserva-item {
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+  margin-bottom: 0.75rem;
+}
+
+.reserva-item:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.reserva-item.editing {
+  border-left-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.reserva-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.reserva-title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.reserva-description {
+  margin: 0.5rem 0;
+  color: #6b7280;
+}
+
+.reserva-meta {
+  margin: 0.5rem 0 0 0;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.reserva-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Estilos para panel Admin - VERSIÓN OSCURA */
+.admin-card {
+  background: linear-gradient(to bottom, rgba(99, 102, 241, 0.15), transparent);
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
+}
+
+.admin-count {
+  background: linear-gradient(to right, #6366f1, #8b5cf6);
+  color: white;
+}
+
+.admin-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-item {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  transition: all 0.2s ease;
+}
+
+.admin-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.6);
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.admin-item .reserva-title,
+.admin-item .reserva-description,
+.admin-item .reserva-meta {
+  color: #e5e7eb;
+}
+
+.admin-item .reserva-description {
+  color: #d1d5db;
+}
+
+.admin-item .reserva-meta {
+  color: #9ca3af;
+}
+
+.loading-state,
+.error-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.loading-icon,
+.error-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.loading-text {
+  color: #9ca3af;
+  font-size: 1rem;
+}
+
+.error-text {
+  color: #fca5a5;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Estilos para Estadísticas y Filtros */
+
+/* Grid de estadísticas */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card.activas {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.stat-card.canceladas {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.stat-card.completadas {
+  border-color: rgba(59, 130, 246, 0.3);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.stat-icon {
+  font-size: 1.5rem;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0.25rem 0 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Barra de filtros */
+.filters-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+.filter-input,
+.filter-select {
+  width: 100%;
+}
+
+.filter-input::placeholder {
+  color: #64748b;
+}
+
+/* Responsive para estadísticas */
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  to {
-    transform: rotate(360deg);
+  
+  .stat-card {
+    padding: 0.75rem;
+  }
+  
+  .stat-value {
+    font-size: 1.25rem;
+  }
+  
+  .filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-group {
+    min-width: 100%;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Estilos específicos para estadísticas y filtros de Admin */
+.admin-stats .stat-card {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(139, 92, 246, 0.3);
 }
 
-.card {
-  padding: 2em;
+.admin-stats .stat-card:hover {
+  border-color: rgba(139, 92, 246, 0.5);
 }
 
-.read-the-docs {
-  color: #888;
+.admin-filters {
+  background: rgba(15, 23, 42, 0.4);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.admin-filters .filter-label {
+  color: #cbd5e1;
 }

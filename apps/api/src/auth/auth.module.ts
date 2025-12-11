@@ -5,7 +5,10 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { JwtStrategy } from './jwt.strategy';
 import { RolesGuard } from './roles.guard';
-import { Roles } from './roles.decorator';
+
+const ACCESS_TTL = process.env.JWT_EXPIRES
+    ? Number(process.env.JWT_EXPIRES)
+    : 900;
 
 @Module({
     imports: [
